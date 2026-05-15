@@ -1,20 +1,15 @@
 //handles routing for mock data endpoints
 
 const express = require('express');
-const authMiddleware = require('../middleware/authMiddleware');
-
 const {
   getStreams,
   getStreamNames,
-  postFilterStreams
+  postFilterStreams,
+  getDataProfileSummary,
+  postTopCorrelatedPair
 } = require('../controllers/mockController');
 
 const router = express.Router();
-
-// Upstream test route (kept)
-router.get('/mock', (req, res) => {
-  res.json({ message: 'Mock route is working' });
-});
 
 /*
  * GET /streams
@@ -35,7 +30,7 @@ router.get('/mock', (req, res) => {
  *   ...
  * ]
  */
-router.get('/streams', authMiddleware, getStreams);
+router.get('/streams', getStreams);
 
 /*
  * GET /stream-names
@@ -51,7 +46,7 @@ router.get('/streams', authMiddleware, getStreams);
  *   "Current Draw"
  * ]
  */
-router.get('/stream-names', authMiddleware, getStreamNames);
+router.get("/stream-names", getStreamNames);
 
 /*
  * POST /filter-streams
@@ -80,6 +75,26 @@ router.get('/stream-names', authMiddleware, getStreamNames);
  *    }
  * ] 
  */
-router.post('/filter-streams', authMiddleware, postFilterStreams);
+router.post('/filter-streams', postFilterStreams);
+
+/*
+ * GET /data-profile
+ *
+ * Description:
+ * Returns dataset-level and per-stream quality summary (counts, missing rate, min/max/mean).
+ */
+router.get('/data-profile', getDataProfileSummary);
+
+/*
+ * POST /top-correlated-pair
+ * Request Body:
+ * {
+ *   streamNames: [ "Temperature", "Voltage Charge", "Humidity" ]
+ * }
+ *
+ * Description:
+ * Returns top correlated pair within provided stream names.
+ */
+router.post('/top-correlated-pair', postTopCorrelatedPair);
 
 module.exports = router;
