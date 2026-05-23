@@ -29,6 +29,9 @@ __pycache__/
 *.sln
 *.sw?
 
+# Correlation alert cache
+correlation_alert/__pycache__
+
 # Generated benchmark outputs (data_science/outputs/)
 data_science/outputs/*.csv
 data_science/outputs/*.json
