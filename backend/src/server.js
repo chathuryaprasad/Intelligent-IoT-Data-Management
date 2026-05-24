@@ -13,6 +13,9 @@ const mockRoutes = require('./routes/mock');
 const thingSpeakRoutes = require('./routes/thingspeak');
 const authRoutes = require('./routes/auth');
 
+
+const { startThingSpeakPolling } = require('./services/thingspeakService');
+
 // Debug-only imports (commented out for production)
 /// const authMiddleware = require("./middleware/authMiddleware");
 /// const { hashPassword, comparePassword } = require("./utils/hashUtils");
@@ -83,4 +86,5 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  startThingSpeakPolling();
 });
