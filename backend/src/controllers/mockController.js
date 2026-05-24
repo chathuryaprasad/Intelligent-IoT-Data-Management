@@ -3,25 +3,26 @@
 const {
   readProcessedData,
   getAvailableStreamNames,
-  filterEntriesByStreamNames
+  filterEntriesByStreamNames,
+  getDataProfile,
+  getTopCorrelatedPair
 } = require('../services/mockService');
 
 //GET /streams — Returns JSON file containing the stream data
-const getStreams = async (req, res) => {
+const getStreams = (req, res) => {
   try {
-    const data = await readProcessedData();
+    const data = readProcessedData();
     res.json(data);
-    console.log("DATA:", data);
   } catch (err) {
     console.error('Error reading stream data:', err);
     res.status(500).json({ error: 'Failed to load stream data' });
   }
 };
 
-//GET /stream-names — Returns an array of available stream names
-const getStreamNames = async (req, res) => {
+//Get /stream-names — Returns an array of available stream names
+const getStreamNames = (req, res) => {
   try {
-    const streamNames = await getAvailableStreamNames();
+    const streamNames = getAvailableStreamNames();
     if (streamNames.length === 0) {
       return res.status(404).json({ error: "No stream names found" });
     }
@@ -32,8 +33,8 @@ const getStreamNames = async (req, res) => {
   }
 };
 
-//POST /filter-streams — Returns JSON file by filtering entries by stream names (without time window)
-const postFilterStreams = async (req, res) => {
+//POST /filter-streams — Returns JSON file by Filtering entries by stream names (without time window)
+const postFilterStreams = (req, res) => {
   const { streamNames } = req.body;
 
   if (!Array.isArray(streamNames) || streamNames.length === 0) {
@@ -41,7 +42,7 @@ const postFilterStreams = async (req, res) => {
   }
 
   try {
-    const filtered = await filterEntriesByStreamNames(streamNames);
+    const filtered = filterEntriesByStreamNames(streamNames);
     res.json(filtered);
   } catch (err) {
     console.error('Error filtering stream data:', err);
@@ -49,8 +50,42 @@ const postFilterStreams = async (req, res) => {
   }
 };
 
+const getDataProfileSummary = (req, res) => {
+  try {
+    const profile = getDataProfile();
+    res.json(profile);
+  } catch (err) {
+    console.error('Error profiling stream data:', err);
+    res.status(500).json({ error: 'Failed to profile stream data' });
+  }
+};
+
+const postTopCorrelatedPair = (req, res) => {
+  const { streamNames } = req.body;
+
+  if (!Array.isArray(streamNames) || streamNames.length < 2) {
+    return res.status(400).json({ error: 'streamNames must be an array with at least two items' });
+  }
+
+  try {
+    const result = getTopCorrelatedPair(streamNames);
+    if (result.pair.length === 0) {
+      return res.status(422).json({ error: 'Unable to compute correlation for selected streams' });
+    }
+    res.json(result);
+  } catch (err) {
+    console.error('Error computing top correlated pair:', err);
+    if (/valid stream names/i.test(err.message)) {
+      return res.status(400).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Failed to compute top correlated pair' });
+  }
+};
+
 module.exports = {
   getStreams,
   getStreamNames,
-  postFilterStreams
+  postFilterStreams,
+  getDataProfileSummary,
+  postTopCorrelatedPair
 };
