@@ -126,12 +126,14 @@ const Dashboard = () => {
         <h3 className="section-title">Controls</h3>
 
         <div className="selector-grid">
-          <div className="selector-card">
+          <div className="selector-group">
+
             <StreamSelector
-              data={data}
+              streams={streamNames.map(s => s.name)}
               selectedStreams={selectedStreams}
               setSelectedStreams={setSelectedStreams}
             />
+            {/* end streamdropdown */}
           </div>
 
           <div className="selector-card">
