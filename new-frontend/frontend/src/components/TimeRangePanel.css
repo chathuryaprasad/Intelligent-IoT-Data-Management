@@ -1,0 +1,134 @@
+/* -----------------------------------------------------------
+   TIME RANGE PANEL — Modern Grafana-style floating panel
+----------------------------------------------------------- */
+
+.time-range-panel {
+  width: 420px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* -----------------------------------------------------------
+   HEADER
+----------------------------------------------------------- */
+.time-range-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time-range-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* -----------------------------------------------------------
+   MODE TOGGLE BUTTONS
+----------------------------------------------------------- */
+.time-mode-toggle button {
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.time-mode-toggle button:hover {
+  background: #e2e8f0;
+}
+
+.time-mode-toggle .active {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  border-color: #2563eb;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+/* -----------------------------------------------------------
+   TWO-COLUMN LAYOUT
+----------------------------------------------------------- */
+.time-range-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.absolute-section,
+.relative-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.absolute-section h4,
+.relative-section h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Disabled state */
+.disabled {
+  opacity: 0.45;
+}
+
+/* -----------------------------------------------------------
+   FOOTER BUTTONS
+----------------------------------------------------------- */
+.time-range-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Analyze button */
+.analyze-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.analyze-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* Settings link */
+.settings-btn {
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.settings-btn:hover {
+  color: #1e40af;
+}

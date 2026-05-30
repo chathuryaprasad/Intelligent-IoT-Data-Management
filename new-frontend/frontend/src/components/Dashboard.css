@@ -337,3 +337,13 @@
   align-items: center;
   gap: 10px;
 }
+
+/* -----------------------------------------------------------
+   TIME RANGE PANEL OVERLAY
+----------------------------------------------------------- */
+.time-range-overlay {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 9999;
+}
