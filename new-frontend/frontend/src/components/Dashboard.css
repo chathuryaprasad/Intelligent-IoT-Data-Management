@@ -92,12 +92,18 @@
 }
 
 .selector-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
+  display: flex;
   gap: 1rem;
-  align-items: stretch;
-}
+  align-items: center;
+  transition: var(--transition);
+  position: relative;
+  flex-wrap: wrap;}
 
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
 .selector-card {
   background: #f8fbff;
   border: 1px solid #dbe7f5;
@@ -107,8 +113,11 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+
+
 .selector-card-wide {
   width: 100%;
+   justify-self: end; /* pushes it to the right */
 }
 
 .selector-card label,
@@ -308,4 +317,23 @@
   .summary-pill {
     min-width: 100%;
   }
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 100px;
+}
+
+.time-controls-wrapper {
+  margin-left: auto;      /* pushes the whole block to the right */
+  display: flex;
+  align-items: center;
+}
+
+.time-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

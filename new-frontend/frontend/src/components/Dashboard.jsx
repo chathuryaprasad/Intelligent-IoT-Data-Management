@@ -135,42 +135,29 @@ const Dashboard = () => {
             />
             {/* end streamdropdown */}
           </div>
-
-          <div className="selector-card">
+          <div className="selector-group">
             <IntervalSelector
               intervals={intervals}
               selectedInterval={selectedInterval}
               setSelectedInterval={setSelectedInterval}
             />
+
           </div>
 
-          <div className="selector-card selector-card-wide">
-            <h4 className="subsection-title">Time Range Selection</h4>
+          {/* <div className="selector-card selector-card-wide"> */}
+          {/* <h4 className="subsection-title">Time Range Selection</h4> */}
 
-            <div className="time-grid">
-              <div>
-                <TimeSelector
-                  label="Start Time"
-                  timeOptions={timeOptions}
-                  selectedTime={selectedTimeStart}
-                  setSelectedTime={setSelectedTimeStart}
-                />
-              </div>
+          <div className="time-controls-wrapper">
+            <div className='time-controls'>
 
-              <div>
-                <TimeSelector
-                  label="End Time"
-                  timeOptions={timeOptions}
-                  selectedTime={selectedTimeEnd}
-                  setSelectedTime={setSelectedTimeEnd}
-                />
-              </div>
+              <button>
+                Select Time Range ▼
+              </button>
 
-              <div className="action-wrap">
-                <button className="primary-btn" onClick={handleSubmit}>
-                  Analyse Time Range
-                </button>
-              </div>
+              <button className="refresh-btn">
+                ⟳
+              </button>
+
             </div>
           </div>
         </div>

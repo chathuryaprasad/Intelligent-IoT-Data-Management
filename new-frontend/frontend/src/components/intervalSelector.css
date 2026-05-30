@@ -1,0 +1,58 @@
+/* -----------------------------------------------------------
+   INTERVAL SELECTOR — Modern chip-style dropdown
+----------------------------------------------------------- */
+
+.interval-chip-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2px;
+ /* min-width: 140px; */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Icon wrapper */
+.interval-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.interval-icon {
+  opacity: 0.7;
+  width: 16px;
+  height: 16px;
+}
+
+/* Chip-style dropdown */
+.interval-chip-select {
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.95rem;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  /* custom arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  /* padding-right: 32px; */
+}
+
+.interval-chip-select:hover {
+  background: #f1f5f9;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.interval-chip-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
