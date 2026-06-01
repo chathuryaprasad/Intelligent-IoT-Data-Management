@@ -12,6 +12,7 @@ import Chart from './Chart.jsx';
 import MostCorrelatedPair from './MostCorrelatedPair.jsx';
 import ScatterPlot from './ScatterPlot.jsx';
 import { calculateCorrelation } from '../utils/correlationUtils.js';
+import TimeRangePanel from './TimeRangePanel.jsx';
 
 const Dashboard = () => {
   const { data, loading, error } = useSensorData(true);
@@ -25,11 +26,26 @@ const Dashboard = () => {
   const intervals = ['5min', '15min', '1h', '6h'];
   const [selectedInterval, setSelectedInterval] = useState(intervals[0]);
 
+  // Time range panel state
+  const [showTimePanel, setShowTimePanel] = useState(false);
+  const [timeMode, setTimeMode] = useState("absolute"); // "absolute" or "relative"
+  const [relativeRange, setRelativeRange] = useState("5min");
+  const [finalStartTime, setFinalStartTime] = useState(null);
+  const [finalEndTime, setFinalEndTime] = useState(null);
+  // End of time range panel state
+
+  // const filteredData = useFilteredData(data, {
+  //   startTime: selectedTimeStart,
+  //   endTime: selectedTimeEnd,
+  //   selectedStreams,
+  //   interval: selectedInterval,
+  // });
+
   const filteredData = useFilteredData(data, {
-    startTime: selectedTimeStart,
-    endTime: selectedTimeEnd,
+    startTime: finalStartTime,
+    endTime: finalEndTime,
     selectedStreams,
-    interval: selectedInterval,
+    interval: selectedInterval
   });
 
   const streamCount = selectedStreams.length;
@@ -67,11 +83,90 @@ const Dashboard = () => {
     };
   }, [selectedStreams, filteredData]);
 
-  const handleSubmit = () => {
-    console.log('Selected Time Range:', selectedTimeStart, '→', selectedTimeEnd);
-    console.log('selectedInterval:', selectedInterval);
-    console.log('Filtered Data:', filteredData);
+  // const handleSubmit = () => {
+  //   console.log('Selected Time Range:', selectedTimeStart, '→', selectedTimeEnd);
+  //   console.log('selectedInterval:', selectedInterval);
+  //   console.log('Filtered Data:', filteredData);
+  // };
+
+  // Time range selection logic:
+  const handleSubmit = React.useCallback(() => {
+    console.log("Dashboard timeMode:", timeMode, "relativeRange:", relativeRange);
+
+    if (timeMode === "absolute") {
+      setFinalStartTime(
+        selectedTimeStart ? new Date(selectedTimeStart).getTime() : null
+      );
+      setFinalEndTime(
+        selectedTimeEnd ? new Date(selectedTimeEnd).getTime() : null
+      );
+    }
+
+    if (timeMode === "relative") {
+      // const now = Date.now();
+      const now = new Date(data[data.length - 1].created_at).getTime();
+
+
+      const ranges = {
+        "5min": 5 * 60 * 1000,
+        "15min": 15 * 60 * 1000,
+        "1h": 60 * 60 * 1000,
+        "6h": 6 * 60 * 1000,
+        "24h": 24 * 60 * 1000
+      };
+
+      const duration = ranges[relativeRange] || 0;
+
+      setFinalEndTime(now);
+      setFinalStartTime(now - duration);
+    }
+
+    setShowTimePanel(false);
+  }, [timeMode, relativeRange, selectedTimeStart, selectedTimeEnd]);
+  // End of time range selection logic
+
+  // Refresh button logic: re-apply the current time range selection
+  const handleRefresh = () => {
+    if (timeMode === "relative") {
+      const now = new Date(data[data.length - 1].created_at).getTime();
+
+      const ranges = {
+        "5min": 5 * 60 * 1000,
+        "15min": 15 * 60 * 1000,
+        "1h": 60 * 60 * 1000,
+        "6h": 6 * 60 * 60 * 1000,
+        "24h": 24 * 60 * 60 * 1000
+      };
+
+      const duration = ranges[relativeRange];
+
+      setFinalEndTime(now);
+      setFinalStartTime(now - duration);
+
+      console.log("Refreshed relative time range");
+      return;
+    }
+
+    // Absolute mode
+    setFinalStartTime(finalStartTime);
+    setFinalEndTime(finalEndTime);
+    console.log("Refreshed absolute time range");
   };
+  // End of refresh button logic
+
+  // formatTimeRange function to display the selected time range in a user-friendly format
+  const formatTimeRange = (start, end, mode, relativeRange) => {
+    if (mode === "relative") {
+      return `Last ${relativeRange}`;
+    }
+
+    // Absolute mode
+    const startStr = new Date(start).toLocaleString();
+    const endStr = new Date(end).toLocaleString();
+    return `${startStr} → ${endStr}`;
+  };
+
+
 
   if (loading) return <p>Loading dataset...</p>;
   if (error) return <p>Error loading data</p>;
@@ -126,51 +221,61 @@ const Dashboard = () => {
         <h3 className="section-title">Controls</h3>
 
         <div className="selector-grid">
-          <div className="selector-card">
+          <div className="selector-group">
+
             <StreamSelector
-              data={data}
+              streams={streamNames.map(s => s.name)}
               selectedStreams={selectedStreams}
               setSelectedStreams={setSelectedStreams}
             />
+            {/* end streamdropdown */}
           </div>
-
-          <div className="selector-card">
+          <div className="selector-group">
             <IntervalSelector
               intervals={intervals}
               selectedInterval={selectedInterval}
               setSelectedInterval={setSelectedInterval}
             />
+
           </div>
 
-          <div className="selector-card selector-card-wide">
-            <h4 className="subsection-title">Time Range Selection</h4>
+          {/* <div className="selector-card selector-card-wide"> */}
+          {/* <h4 className="subsection-title">Time Range Selection</h4> */}
 
-            <div className="time-grid">
-              <div>
-                <TimeSelector
-                  label="Start Time"
-                  timeOptions={timeOptions}
-                  selectedTime={selectedTimeStart}
-                  setSelectedTime={setSelectedTimeStart}
-                />
-              </div>
+          <div className="time-controls-wrapper">
+            <div className='time-controls'>
 
-              <div>
-                <TimeSelector
-                  label="End Time"
-                  timeOptions={timeOptions}
-                  selectedTime={selectedTimeEnd}
-                  setSelectedTime={setSelectedTimeEnd}
-                />
-              </div>
+              <button
+                className="time-range-toggle"
+                onClick={() => setShowTimePanel(prev => !prev)}>
+                {/* Select Time Range ▼ */}
+                {finalStartTime && finalEndTime
+                  ? formatTimeRange(finalStartTime, finalEndTime, timeMode, relativeRange)
+                  : "Select Time Range ▼"}
+              </button>
 
-              <div className="action-wrap">
-                <button className="primary-btn" onClick={handleSubmit}>
-                  Analyse Time Range
-                </button>
-              </div>
+              <button className="refresh-btn" onClick={handleRefresh}>
+                ⟳
+              </button>
+
             </div>
           </div>
+          {showTimePanel && (
+            <div className="time-range-overlay">
+              <TimeRangePanel
+                timeOptions={timeOptions}
+                selectedTimeStart={selectedTimeStart}
+                setSelectedTimeStart={setSelectedTimeStart}
+                selectedTimeEnd={selectedTimeEnd}
+                setSelectedTimeEnd={setSelectedTimeEnd}
+                timeMode={timeMode}
+                setTimeMode={setTimeMode}
+                relativeRange={relativeRange}
+                setRelativeRange={setRelativeRange}
+                onAnalyze={handleSubmit}
+              />
+            </div>
+          )}
         </div>
       </section>
 
